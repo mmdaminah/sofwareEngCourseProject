@@ -1,0 +1,29 @@
+services:
+  db:
+    container_name: postgresdb
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: planer
+  app:
+    container_name: springapp
+    build:
+      context: softwareEng
+      dockerfile: "dockerfile"
+      args:
+        JAR_FILE: build/libs/\*.jar
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+  ng:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
